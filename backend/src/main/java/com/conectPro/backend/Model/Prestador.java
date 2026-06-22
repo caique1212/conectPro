@@ -32,7 +32,7 @@ public class Prestador {
     private NivelPrestador nivel = NivelPrestador.BRONZE;
 
     @OneToOne
-    @JoinColumn(name = "usuario_id")
+    @JoinColumn(name = "usuario_id", unique = true)
     private Usuario usuario;
 
     @Transient
