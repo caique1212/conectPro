@@ -1,0 +1,100 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  box-sizing: border-box;
+}
+
+:root {
+  color-scheme: dark;
+}
+
+body {
+  margin: 0;
+  background:
+    radial-gradient(circle at 15% 0%, rgba(124, 58, 237, 0.36), transparent 32rem),
+    radial-gradient(circle at 85% 8%, rgba(168, 85, 247, 0.2), transparent 28rem),
+    linear-gradient(180deg, rgba(15, 11, 31, 0.92), rgba(9, 9, 15, 1) 28rem),
+    #09090f;
+  color: #f8fafc;
+}
+
+input,
+select,
+textarea {
+  outline: none;
+}
+
+.field {
+  @apply w-full rounded-lg border border-white/10 bg-white/[0.07] px-3 py-2 text-sm text-slate-100 shadow-sm transition placeholder:text-slate-500 focus:border-violet-400 focus:ring-2 focus:ring-violet-500/30;
+}
+
+select.field {
+  @apply border-purple-500/40 bg-[#1f1633] text-white focus:border-purple-400 focus:ring-purple-500/40;
+}
+
+select.field option {
+  background: #1f1633;
+  color: #ffffff;
+}
+
+.label {
+  @apply text-sm font-semibold text-slate-200;
+}
+
+.btn {
+  @apply inline-flex min-h-10 items-center justify-center rounded-lg px-4 py-2 text-sm font-semibold transition disabled:cursor-not-allowed disabled:opacity-60;
+}
+
+.btn-primary {
+  @apply btn bg-violet-600 text-white shadow-lg shadow-violet-950/30 hover:bg-violet-500;
+}
+
+.btn-secondary {
+  @apply btn bg-fuchsia-600 text-white shadow-lg shadow-fuchsia-950/25 hover:bg-fuchsia-500;
+}
+
+.btn-danger {
+  @apply btn bg-rose-600 text-white hover:bg-rose-500;
+}
+
+.btn-ghost {
+  @apply btn border border-white/10 bg-white/[0.06] text-slate-100 hover:bg-white/[0.1];
+}
+
+.surface {
+  @apply rounded-2xl border border-white/10 bg-white/[0.06] shadow-2xl shadow-black/20 backdrop-blur;
+}
+
+.muted {
+  @apply text-slate-300;
+}
+
+.eyebrow {
+  @apply text-sm font-bold uppercase tracking-[0.22em] text-violet-300;
+}
+
+.full-band {
+  @apply border-y border-white/10 bg-white/[0.035] px-4 py-14 sm:px-8;
+  margin-left: calc(50% - 50vw);
+  margin-right: calc(50% - 50vw);
+  padding-left: max(1rem, calc((100vw - 80rem) / 2 + 1rem));
+  padding-right: max(1rem, calc((100vw - 80rem) / 2 + 1rem));
+}
+
+.timeline-step {
+  @apply relative rounded-lg border border-white/10 bg-[#0f0b1f]/80 p-5;
+}
+
+.timeline-step span {
+  @apply grid h-11 w-11 place-items-center rounded-lg bg-violet-600 text-lg font-black text-white shadow-lg shadow-violet-950/35;
+}
+
+.timeline-step p {
+  @apply mt-5 text-sm font-semibold leading-6 text-slate-100;
+}
+
+.cta-section {
+  @apply rounded-2xl border border-violet-300/20 bg-gradient-to-r from-violet-700/90 via-purple-700/80 to-fuchsia-700/80 p-8 text-center shadow-2xl shadow-violet-950/40 sm:p-12;
+}

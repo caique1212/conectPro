@@ -1,0 +1,39 @@
+# Environment variables
+.env
+.env.*
+!.env.example
+!frontend/.env.example
+!backend/.env.example
+
+# Dependencies
+node_modules/
+frontend/node_modules/
+
+# Next.js
+.next/
+frontend/.next/
+out/
+frontend/out/
+next-env.d.ts
+
+# Java / Gradle
+.gradle/
+build/
+backend/.gradle/
+backend/build/
+
+# Logs
+*.log
+backend/backend-run.log
+frontend/next-dev.log
+
+# OS / editors
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# Local Git metadata backups, if a nested repo is converted to the root repo
+.backend-git-backup/
+.git-backup/
+backend/.git-backup/
