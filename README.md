@@ -6,7 +6,7 @@ ConectaPro e um marketplace de servicos tecnicos que conecta clientes a prestado
 
 - Backend: Java 25, Spring Boot, Gradle, Spring Data JPA, Spring Security, PostgreSQL
 - Frontend: Next.js, React, Tailwind CSS, TypeScript
-- Deploy sugerido: frontend na Vercel, backend no Render e banco PostgreSQL no Railway
+- Deploy sugerido: frontend na Vercel, backend no Render e banco PostgreSQL no Supabase
 
 ## Estrutura
 
@@ -26,15 +26,16 @@ Configure estas variaveis localmente, no Render ou em qualquer ambiente de produ
 DB_URL=jdbc:postgresql://HOST:PORT/DATABASE?sslmode=require
 DB_USERNAME=postgres
 DB_PASSWORD=sua_senha
-SERVER_PORT=8080
+SERVER_PORT=10000
 ```
 
-No Railway, use os dados do servico PostgreSQL para montar a `DB_URL` JDBC:
+Em producao no Render com Supabase, use a string do **Connection Pooler/Supavisor**. Evite a conexao direta do Supabase, como `db.<project>.supabase.co:5432`, porque ela pode depender de IPv6 e falhar no Render com `Network is unreachable`.
 
 ```env
-DB_URL=jdbc:postgresql://<RAILWAY_HOST>:<RAILWAY_PORT>/<RAILWAY_DATABASE>?sslmode=require
-DB_USERNAME=<RAILWAY_USER>
-DB_PASSWORD=<RAILWAY_PASSWORD>
+DB_URL=jdbc:postgresql://<SUPABASE_POOLER_HOST>:<SUPABASE_POOLER_PORT>/<SUPABASE_DATABASE>?sslmode=require
+DB_USERNAME=<SUPABASE_POOLER_USER>
+DB_PASSWORD=<SUPABASE_PASSWORD>
+SERVER_PORT=10000
 ```
 
 Existe um exemplo em `backend/.env.example`.
@@ -42,7 +43,7 @@ Existe um exemplo em `backend/.env.example`.
 ### Frontend
 
 ```env
-NEXT_PUBLIC_API_URL=http://localhost:8080
+NEXT_PUBLIC_API_URL=http://localhost:10000
 ```
 
 Em producao, troque para a URL publica do backend no Render:
@@ -79,7 +80,7 @@ cd backend
 ./gradlew bootRun
 ```
 
-A API sobe por padrao em `http://localhost:8080`.
+A API sobe por padrao em `http://localhost:10000`.
 
 ### 3. Frontend
 
@@ -103,25 +104,26 @@ docker build -t conectapro-backend .
 Run:
 
 ```bash
-docker run --rm -p 8080:8080 \
+docker run --rm -p 10000:10000 \
   -e DB_URL="jdbc:postgresql://host.docker.internal:5432/conectapro" \
   -e DB_USERNAME="postgres" \
   -e DB_PASSWORD="postgres" \
-  -e SERVER_PORT="8080" \
+  -e SERVER_PORT="10000" \
   conectapro-backend
 ```
 
 ## Deploy
 
-### PostgreSQL no Railway
+### PostgreSQL no Supabase
 
-1. Crie um projeto no Railway.
-2. Adicione um servico PostgreSQL.
-3. Copie os dados de conexao do banco.
-4. No backend hospedado no Render, configure:
-   - `DB_URL=jdbc:postgresql://HOST:PORT/DATABASE?sslmode=require`
-   - `DB_USERNAME=USER`
-   - `DB_PASSWORD=PASSWORD`
+1. Crie ou abra o projeto no Supabase.
+2. Va em Database > Connection string.
+3. Selecione a string do Connection Pooler/Supavisor, nao a conexao direta.
+4. Monte a URL JDBC para o Render:
+   - `DB_URL=jdbc:postgresql://POOLER_HOST:POOLER_PORT/DATABASE?sslmode=require`
+   - `DB_USERNAME=POOLER_USER`
+   - `DB_PASSWORD=SUPABASE_PASSWORD`
+5. Nao coloque usuario, senha ou host real no codigo nem no GitHub.
 
 ### Backend no Render
 
@@ -134,7 +136,7 @@ Opcao com Docker:
    - `DB_URL`
    - `DB_USERNAME`
    - `DB_PASSWORD`
-   - `SERVER_PORT=8080`
+   - `SERVER_PORT=10000`
 5. Publique e copie a URL publica gerada pelo Render.
 
 Opcao sem Docker:

@@ -12,9 +12,9 @@ FROM eclipse-temurin:25-jre
 
 WORKDIR /app
 
-ENV SERVER_PORT=8080
+ENV SERVER_PORT=10000
 
-EXPOSE 8080
+EXPOSE 10000
 
 COPY --from=build /app/build/libs/*.jar app.jar
 
