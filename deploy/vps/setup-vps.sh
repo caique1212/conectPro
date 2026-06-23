@@ -47,19 +47,19 @@ if [[ -z "${DB_PASSWORD:-}" ]]; then
 fi
 
 echo "Configurando PostgreSQL..."
-if ! sudo -u postgres psql -tAc "SELECT 1 FROM pg_roles WHERE rolname='${DB_USER}'" | grep -q 1; then
-  sudo -u postgres psql -v ON_ERROR_STOP=1 \
+if ! runuser -u postgres -- psql -tAc "SELECT 1 FROM pg_roles WHERE rolname='${DB_USER}'" | grep -q 1; then
+  runuser -u postgres -- psql -v ON_ERROR_STOP=1 \
     -c "CREATE ROLE ${DB_USER} LOGIN PASSWORD '${DB_PASSWORD}';"
 else
-  sudo -u postgres psql -v ON_ERROR_STOP=1 \
+  runuser -u postgres -- psql -v ON_ERROR_STOP=1 \
     -c "ALTER ROLE ${DB_USER} WITH LOGIN PASSWORD '${DB_PASSWORD}';"
 fi
 
-if ! sudo -u postgres psql -tAc "SELECT 1 FROM pg_database WHERE datname='${DB_NAME}'" | grep -q 1; then
-  sudo -u postgres createdb --owner="$DB_USER" "$DB_NAME"
+if ! runuser -u postgres -- psql -tAc "SELECT 1 FROM pg_database WHERE datname='${DB_NAME}'" | grep -q 1; then
+  runuser -u postgres -- createdb --owner="$DB_USER" "$DB_NAME"
 fi
 
-sudo -u postgres psql -v ON_ERROR_STOP=1 \
+runuser -u postgres -- psql -v ON_ERROR_STOP=1 \
   -c "ALTER DATABASE ${DB_NAME} OWNER TO ${DB_USER};"
 
 mkdir -p "$CONFIG_DIR"
