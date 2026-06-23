@@ -11,6 +11,7 @@ public class PrestadorResponse {
     private Long id;
     private String categoria;
     private String descricao;
+    private String qualificacao;
     private String cidade;
     private String telefone;
     private Boolean aprovado;
@@ -26,6 +27,7 @@ public class PrestadorResponse {
                 .id(prestador.getId())
                 .categoria(prestador.getCategoria())
                 .descricao(prestador.getDescricao())
+                .qualificacao(prestador.getQualificacao())
                 .cidade(prestador.getCidade())
                 .telefone(prestador.getTelefone())
                 .aprovado(prestador.getAprovado())

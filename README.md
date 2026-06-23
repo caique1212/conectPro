@@ -1,88 +1,43 @@
 # ConectaPro
 
-ConectaPro e um marketplace de servicos tecnicos que conecta clientes a prestadores avaliados e aprovados administrativamente.
+Marketplace de servicos tecnicos com clientes, prestadores, solicitacoes, avaliacoes e aprovacao administrativa.
 
 ## Stack
 
-- Backend: Java 25, Spring Boot, Gradle, Spring Data JPA, Spring Security, PostgreSQL
+- Backend: Java 25, Spring Boot, JPA, PostgreSQL
 - Frontend: Next.js, React, Tailwind CSS, TypeScript
-- Deploy sugerido: frontend na Vercel, backend no Render e banco PostgreSQL no Supabase
+- VPS: backend em `8080`, frontend em `3001`
 
 ## Estrutura
 
 ```text
-ConectPro/
-  backend/   # API Spring Boot
-  frontend/  # App Next.js
+backend/       API Spring Boot
+frontend/      Aplicacao Next.js
+deploy/vps/    Scripts e configuracoes do VPS
+vps.sh         Atalho para setup, deploy, status e logs
 ```
 
-## Variaveis de ambiente
+## Cadastro
 
-### Backend
+- Cliente: cria somente a conta.
+- Prestador: cria a conta e o perfil profissional na mesma operacao.
+- O perfil profissional possui tipo de servico, qualificacao, descricao, cidade e telefone.
+- Novos prestadores ficam pendentes ate a aprovacao do Admin.
 
-Configure estas variaveis localmente, no Render ou em qualquer ambiente de producao:
+## Rodar localmente
 
-```env
-DB_URL=jdbc:postgresql://HOST:PORT/DATABASE?sslmode=require
-DB_USERNAME=postgres
-DB_PASSWORD=sua_senha
-SERVER_PORT=10000
-```
-
-Em producao no Render com Supabase, use a string do **Connection Pooler/Supavisor**. Evite a conexao direta do Supabase, como `db.<project>.supabase.co:5432`, porque ela pode depender de IPv6 e falhar no Render com `Network is unreachable`.
-
-```env
-DB_URL=jdbc:postgresql://<SUPABASE_POOLER_HOST>:<SUPABASE_POOLER_PORT>/<SUPABASE_DATABASE>?sslmode=require
-DB_USERNAME=<SUPABASE_POOLER_USER>
-DB_PASSWORD=<SUPABASE_PASSWORD>
-SERVER_PORT=10000
-```
-
-Existe um exemplo em `backend/.env.example`.
-
-### Frontend
-
-```env
-NEXT_PUBLIC_API_URL=http://localhost:10000
-```
-
-Em producao, troque para a URL publica do backend no Render:
-
-```env
-NEXT_PUBLIC_API_URL=https://sua-api.onrender.com
-```
-
-Existe um exemplo em `frontend/.env.example`.
-
-## Rodando localmente
-
-### 1. Banco PostgreSQL
-
-Crie o banco local:
-
-```sql
-CREATE DATABASE conectapro;
-```
-
-### 2. Backend
-
-Configure as variaveis de ambiente do backend e rode:
+Backend:
 
 ```powershell
 cd backend
+$env:DB_URL="jdbc:postgresql://localhost:5432/conectapro"
+$env:DB_USERNAME="postgres"
+$env:DB_PASSWORD="sua_senha"
+$env:SERVER_PORT="8080"
 .\gradlew.bat bootRun
 ```
 
-Em Linux/macOS:
-
-```bash
-cd backend
-./gradlew bootRun
-```
-
-A API sobe por padrao em `http://localhost:10000`.
-
-### 3. Frontend
+Frontend:
 
 ```bash
 cd frontend
@@ -90,73 +45,79 @@ npm install
 npm run dev
 ```
 
-O app sobe por padrao em `http://localhost:3000` ou `http://127.0.0.1:3000`.
+Configure `frontend/.env.local`:
 
-## Docker do backend
-
-Build:
-
-```bash
-cd backend
-docker build -t conectapro-backend .
+```env
+NEXT_PUBLIC_API_URL=http://localhost:8080
 ```
 
-Run:
+## Deploy no VPS
 
-```bash
-docker run --rm -p 10000:10000 \
-  -e DB_URL="jdbc:postgresql://host.docker.internal:5432/conectapro" \
-  -e DB_USERNAME="postgres" \
-  -e DB_PASSWORD="postgres" \
-  -e SERVER_PORT="10000" \
-  conectapro-backend
+Projeto esperado em:
+
+```text
+/var/www/conectapro
 ```
 
-## Deploy
+Primeira configuracao:
 
-### PostgreSQL no Supabase
+```bash
+cd /var/www/conectapro
+chmod +x vps.sh
+PUBLIC_HOST=187.127.17.146 ./vps.sh setup
+```
 
-1. Crie ou abra o projeto no Supabase.
-2. Va em Database > Connection string.
-3. Selecione a string do Connection Pooler/Supavisor, nao a conexao direta.
-4. Monte a URL JDBC para o Render:
-   - `DB_URL=jdbc:postgresql://POOLER_HOST:POOLER_PORT/DATABASE?sslmode=require`
-   - `DB_USERNAME=POOLER_USER`
-   - `DB_PASSWORD=SUPABASE_PASSWORD`
-5. Nao coloque usuario, senha ou host real no codigo nem no GitHub.
+O setup instala/configura PostgreSQL, gera uma senha forte, cria o banco, prepara o backend como servico systemd e o frontend no PM2.
 
-### Backend no Render
+Publicar ou atualizar:
 
-Opcao com Docker:
+```bash
+cd /var/www/conectapro
+./vps.sh deploy
+```
 
-1. Crie um novo Web Service no Render usando este repositorio do GitHub.
-2. Configure o root directory como `backend`.
-3. Selecione Docker.
-4. Configure as variaveis:
-   - `DB_URL`
-   - `DB_USERNAME`
-   - `DB_PASSWORD`
-   - `SERVER_PORT=10000`
-5. Publique e copie a URL publica gerada pelo Render.
+Status e logs:
 
-Opcao sem Docker:
+```bash
+./vps.sh status
+./vps.sh logs-backend
+./vps.sh logs-frontend
+```
 
-1. Configure o root directory como `backend`.
-2. Use Java 25.
-3. Build command: `./gradlew bootJar`
-4. Start command: `java -jar build/libs/*.jar`
+Documentacao detalhada: `deploy/vps/README.md`.
 
-### Frontend na Vercel
+## Dados para apresentacao
 
-1. Importe o repositorio na Vercel.
-2. Configure o root directory como `frontend`.
-3. Configure `NEXT_PUBLIC_API_URL` com a URL publica do backend no Render.
-4. Use o build command padrao `npm run build`.
+O VPS usa `DEMO_DATA_ENABLED=true` e cria os dados apenas uma vez.
 
-## Cuidados antes de publicar
+Admin:
 
-- Nao versionar `.env`.
-- Nao versionar `node_modules`.
-- Nao versionar `.next`.
-- Nao versionar `build`.
-- Nao colocar senha real em `application.properties`; use variaveis de ambiente.
+```text
+Email: admin@conectapro.com
+Senha: Admin@123
+Tipo: ADMIN
+```
+
+Clientes:
+
+```text
+cliente1@conectapro.com ate cliente10@conectapro.com
+Senha: Demo@123
+Tipo: CLIENTE
+```
+
+Prestadores:
+
+```text
+prestador1@conectapro.com ate prestador10@conectapro.com
+Senha: Demo@123
+Tipo: PRESTADOR
+```
+
+O seed inclui prestadores aprovados e pendentes, solicitacoes em todos os status e avaliacoes de servicos finalizados.
+
+## Seguranca
+
+- Senhas do PostgreSQL nao sao versionadas.
+- O setup salva as credenciais em `/etc/conectapro/backend.env` com permissao `600`.
+- O login ainda e simples para o MVP; JWT e BCrypt ficam para uma etapa futura.

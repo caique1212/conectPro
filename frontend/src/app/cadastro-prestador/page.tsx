@@ -6,7 +6,7 @@ import { Message } from "@/components/Message";
 import { PrestadorCard } from "@/components/PrestadorCard";
 import { api, Prestador } from "@/services/api";
 
-const vazio = { categoria: "", descricao: "", cidade: "", telefone: "", usuarioId: "" };
+const vazio = { categoria: "", descricao: "", qualificacao: "", cidade: "", telefone: "", usuarioId: "" };
 
 export default function CadastroPrestadorPage() {
   const [form, setForm] = useState(vazio);
@@ -72,6 +72,10 @@ export default function CadastroPrestadorPage() {
               <textarea className="field min-h-24" value={form.descricao} onChange={(event) => setForm({ ...form, descricao: event.target.value })} required />
             </label>
             <label className="grid gap-1">
+              <span className="label">Qualificação</span>
+              <input className="field" value={form.qualificacao} onChange={(event) => setForm({ ...form, qualificacao: event.target.value })} required />
+            </label>
+            <label className="grid gap-1">
               <span className="label">Cidade</span>
               <input className="field" value={form.cidade} onChange={(event) => setForm({ ...form, cidade: event.target.value })} required />
             </label>
@@ -103,7 +107,7 @@ export default function CadastroPrestadorPage() {
               <div key={prestador.id} className="space-y-2">
                 <PrestadorCard prestador={prestador} showAdminStatus />
                 <div className="flex flex-wrap gap-2">
-                  <button className="btn-ghost" onClick={() => { setEditandoId(String(prestador.id)); setForm({ categoria: prestador.categoria, descricao: prestador.descricao, cidade: prestador.cidade, telefone: prestador.telefone, usuarioId: String(prestador.usuarioId) }); }}>
+                  <button className="btn-ghost" onClick={() => { setEditandoId(String(prestador.id)); setForm({ categoria: prestador.categoria, descricao: prestador.descricao, qualificacao: prestador.qualificacao ?? "", cidade: prestador.cidade, telefone: prestador.telefone, usuarioId: String(prestador.usuarioId) }); }}>
                     Editar
                   </button>
                   <button className="btn-danger" onClick={() => excluir(prestador.id)}>

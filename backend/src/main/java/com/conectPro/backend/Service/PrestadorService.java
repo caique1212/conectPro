@@ -1,6 +1,8 @@
 package com.conectPro.backend.Service;
 
 import com.conectPro.backend.Enums.NivelPrestador;
+import com.conectPro.backend.Enums.TipoUsuario;
+import com.conectPro.backend.DTO.CadastroPrestadorRequest;
 import com.conectPro.backend.Model.Avaliacao;
 import com.conectPro.backend.Model.Prestador;
 import com.conectPro.backend.Model.Usuario;
@@ -8,6 +10,7 @@ import com.conectPro.backend.Repository.AvaliacaoRepository;
 import com.conectPro.backend.Repository.PrestadorRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -33,6 +36,29 @@ public class PrestadorService {
         return completarAvaliacoes(prestadorRepository.save(prestador));
     }
 
+    @Transactional
+    public Prestador cadastrarCompleto(CadastroPrestadorRequest request) {
+        Usuario usuario = usuarioService.criar(Usuario.builder()
+                .nome(request.getNome())
+                .email(request.getEmail())
+                .senha(request.getSenha())
+                .tipoUsuario(TipoUsuario.PRESTADOR)
+                .build());
+
+        Prestador prestador = Prestador.builder()
+                .categoria(request.getCategoria())
+                .descricao(request.getDescricao())
+                .qualificacao(request.getQualificacao())
+                .cidade(request.getCidade())
+                .telefone(request.getTelefone())
+                .aprovado(false)
+                .nivel(NivelPrestador.BRONZE)
+                .usuario(usuario)
+                .build();
+
+        return completarAvaliacoes(prestadorRepository.save(prestador));
+    }
+
     public List<Prestador> listarAprovados() {
         return completarAvaliacoes(prestadorRepository.findByAprovadoTrue());
     }
@@ -55,6 +81,7 @@ public class PrestadorService {
                 .orElseThrow(() -> new RuntimeException("Prestador nao encontrado"));
         prestador.setCategoria(prestadorAtualizado.getCategoria());
         prestador.setDescricao(prestadorAtualizado.getDescricao());
+        prestador.setQualificacao(prestadorAtualizado.getQualificacao());
         prestador.setCidade(prestadorAtualizado.getCidade());
         prestador.setTelefone(prestadorAtualizado.getTelefone());
         if (prestadorAtualizado.getAprovado() != null) {

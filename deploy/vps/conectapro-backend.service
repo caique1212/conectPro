@@ -1,0 +1,15 @@
+[Unit]
+Description=ConectaPro Spring Boot Backend
+After=network.target postgresql.service
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/var/www/conectapro/backend
+EnvironmentFile=/etc/conectapro/backend.env
+ExecStart=/usr/bin/java -jar /var/www/conectapro/backend/app.jar
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

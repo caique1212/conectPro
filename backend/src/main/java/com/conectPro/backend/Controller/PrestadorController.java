@@ -1,5 +1,6 @@
 package com.conectPro.backend.Controller;
 
+import com.conectPro.backend.DTO.CadastroPrestadorRequest;
 import com.conectPro.backend.DTO.PrestadorRequest;
 import com.conectPro.backend.DTO.PrestadorResponse;
 import com.conectPro.backend.Model.Prestador;
@@ -19,6 +20,11 @@ public class PrestadorController {
     @PostMapping
     public PrestadorResponse criar(@RequestBody PrestadorRequest request) {
         return PrestadorResponse.fromEntity(prestadorService.criar(toEntity(request)));
+    }
+
+    @PostMapping("/cadastro")
+    public PrestadorResponse cadastrarCompleto(@RequestBody CadastroPrestadorRequest request) {
+        return PrestadorResponse.fromEntity(prestadorService.cadastrarCompleto(request));
     }
 
     @GetMapping
@@ -84,6 +90,7 @@ public class PrestadorController {
         return Prestador.builder()
                 .categoria(request.getCategoria())
                 .descricao(request.getDescricao())
+                .qualificacao(request.getQualificacao())
                 .cidade(request.getCidade())
                 .telefone(request.getTelefone())
                 .aprovado(request.getAprovado())

@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { Message } from "@/components/Message";
 import { UserTypePicker } from "@/components/UserTypePicker";
 import { api, TipoUsuario } from "@/services/api";
-import { ADMIN_MASTER, dashboardPath, isAdminMasterLogin, saveUser } from "@/utils/auth";
+import { dashboardPath, saveUser } from "@/utils/auth";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -18,24 +18,16 @@ export default function LoginPage() {
     event.preventDefault();
     setErro("");
 
-    if (tipoUsuario === "ADMIN") {
-      if (!isAdminMasterLogin(email, senha)) {
-        setErro("Credenciais administrativas inválidas.");
-        return;
-      }
-
-      saveUser(ADMIN_MASTER);
-      router.push("/admin");
-      return;
-    }
-
     try {
       const usuario = await api.login(email, senha);
-      const usuarioLogado = { ...usuario, tipoUsuario };
-      saveUser(usuarioLogado);
-      router.push(dashboardPath(tipoUsuario));
+      if (usuario.tipoUsuario !== tipoUsuario) {
+        setErro(`Esta conta esta cadastrada como ${usuario.tipoUsuario}.`);
+        return;
+      }
+      saveUser(usuario);
+      router.push(dashboardPath(usuario.tipoUsuario));
     } catch {
-      setErro("Não foi possível conectar ao servidor. Verifique se o backend está rodando.");
+      setErro("Nao foi possivel entrar. Verifique as credenciais e se o backend esta rodando.");
     }
   }
 
@@ -45,8 +37,7 @@ export default function LoginPage() {
         <p className="eyebrow">Acesso seguro</p>
         <h1 className="mt-3 text-4xl font-black text-white sm:text-5xl">Entrar no ConectaPro</h1>
         <p className="mt-5 text-lg leading-8 text-slate-300">
-          Clientes e prestadores seguem o fluxo do backend. O acesso ADMIN usa uma credencial master temporária para
-          apresentação do MVP.
+          Clientes, prestadores e administradores entram com contas validadas pelo backend.
         </p>
       </div>
 
@@ -60,7 +51,7 @@ export default function LoginPage() {
           <input className="field" type="password" value={senha} onChange={(event) => setSenha(event.target.value)} required />
         </label>
         <div className="grid gap-2">
-          <span className="label">Tipo de usuário</span>
+          <span className="label">Tipo de usuario</span>
           <UserTypePicker value={tipoUsuario} onChange={setTipoUsuario} options={["CLIENTE", "PRESTADOR", "ADMIN"]} />
         </div>
         <button className="btn-primary">Entrar</button>

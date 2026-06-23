@@ -14,6 +14,7 @@ export type Prestador = {
   id: number;
   categoria: string;
   descricao: string;
+  qualificacao: string;
   cidade: string;
   telefone: string;
   aprovado: boolean;
@@ -83,10 +84,21 @@ export const api = {
   criarPrestador: (data: {
     categoria: string;
     descricao: string;
+    qualificacao: string;
     cidade: string;
     telefone: string;
     usuarioId: number;
   }) => request<Prestador>("/prestadores", { method: "POST", body: JSON.stringify(data) }),
+  cadastrarPrestadorCompleto: (data: {
+    nome: string;
+    email: string;
+    senha: string;
+    categoria: string;
+    descricao: string;
+    qualificacao: string;
+    cidade: string;
+    telefone: string;
+  }) => request<Prestador>("/prestadores/cadastro", { method: "POST", body: JSON.stringify(data) }),
   listarPrestadores: () => request<Prestador[]>("/prestadores"),
   listarTodosPrestadores: () => request<Prestador[]>("/prestadores/todos"),
   listarPendentes: () => request<Prestador[]>("/prestadores/pendentes"),
@@ -100,6 +112,7 @@ export const api = {
   atualizarPrestador: (id: string, data: {
     categoria: string;
     descricao: string;
+    qualificacao: string;
     cidade: string;
     telefone: string;
     usuarioId: number;

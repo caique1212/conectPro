@@ -20,6 +20,8 @@ public class Prestador {
 
     private String descricao;
 
+    private String qualificacao;
+
     private String cidade;
 
     private String telefone;

@@ -98,6 +98,7 @@ export default function AdminPage() {
                   <div>
                     <h3 className="font-bold text-white">{prestador.usuarioNome ?? "Prestador"}</h3>
                     <p className="text-sm text-slate-400">ID {prestador.id} · {prestador.categoria} · {prestador.cidade}</p>
+                    {prestador.qualificacao && <p className="mt-1 text-sm text-violet-200">{prestador.qualificacao}</p>}
                     <p className="mt-1 text-sm text-slate-300">Média {(prestador.mediaAvaliacoes ?? 0).toFixed(1)} · {prestador.quantidadeAvaliacoes ?? 0} avaliações</p>
                   </div>
                   <div className="flex flex-wrap gap-2">

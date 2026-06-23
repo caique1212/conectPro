@@ -7,7 +7,7 @@ import { Message } from "@/components/Message";
 import { api, Avaliacao, Prestador, Solicitacao, StatusSolicitacao } from "@/services/api";
 import { AuthUser, getUser } from "@/utils/auth";
 
-const cadastroVazio = { categoria: "", descricao: "", cidade: "", telefone: "", usuarioId: "" };
+const cadastroVazio = { categoria: "", descricao: "", qualificacao: "", cidade: "", telefone: "", usuarioId: "" };
 
 export default function PrestadorDashboardPage() {
   const [usuario, setUsuario] = useState<AuthUser | null>(null);
@@ -129,12 +129,16 @@ export default function PrestadorDashboardPage() {
               </p>
               <p className="text-sm text-slate-400">{perfil.descricao}</p>
               <p className="text-sm text-slate-300">
+                <span className="font-semibold text-slate-100">Qualificação:</span> {perfil.qualificacao}
+              </p>
+              <p className="text-sm text-slate-300">
                 Média {(perfil.mediaAvaliacoes ?? 0).toFixed(1)} · {perfil.quantidadeAvaliacoes ?? 0} avaliações
               </p>
             </div>
           ) : (
             <form onSubmit={cadastrar} className="mt-4 grid gap-3">
               <input className="field" value={cadastro.categoria} onChange={(event) => setCadastro({ ...cadastro, categoria: event.target.value })} placeholder="Categoria" required />
+              <input className="field" value={cadastro.qualificacao} onChange={(event) => setCadastro({ ...cadastro, qualificacao: event.target.value })} placeholder="Qualificação profissional" required />
               <textarea className="field min-h-24" value={cadastro.descricao} onChange={(event) => setCadastro({ ...cadastro, descricao: event.target.value })} placeholder="Descrição" required />
               <input className="field" value={cadastro.cidade} onChange={(event) => setCadastro({ ...cadastro, cidade: event.target.value })} placeholder="Cidade" required />
               <input className="field" value={cadastro.telefone} onChange={(event) => setCadastro({ ...cadastro, telefone: event.target.value })} placeholder="Telefone" required />

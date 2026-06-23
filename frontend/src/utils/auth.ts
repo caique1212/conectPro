@@ -9,19 +9,6 @@ export type AuthUser = {
 
 const STORAGE_KEY = "conectapro_user";
 
-export const ADMIN_MASTER = {
-  id: 0,
-  nome: "Admin Master",
-  email: "admin@conectapro.com",
-  tipoUsuario: "ADMIN" as TipoUsuario,
-};
-
-const ADMIN_MASTER_PASSWORD = "admin123";
-
-export function isAdminMasterLogin(email: string, senha: string) {
-  return email.trim().toLowerCase() === ADMIN_MASTER.email && senha === ADMIN_MASTER_PASSWORD;
-}
-
 export function saveUser(usuario: AuthUser | Usuario) {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(usuario));
 }

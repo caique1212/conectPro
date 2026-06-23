@@ -29,6 +29,11 @@ export function PrestadorCard({ prestador, showAdminStatus = false, onAprovar }:
         )}
       </div>
       <p className="mt-3 text-sm leading-6 text-slate-300">{prestador.descricao}</p>
+      {prestador.qualificacao && (
+        <p className="mt-2 text-sm text-violet-200">
+          <span className="font-semibold">Qualificação:</span> {prestador.qualificacao}
+        </p>
+      )}
       <div className="mt-4 grid gap-2 text-sm text-slate-300 sm:grid-cols-4">
         <span>Telefone: {prestador.telefone}</span>
         <span>Média: {(prestador.mediaAvaliacoes ?? 0).toFixed(1)}</span>
